@@ -4,13 +4,13 @@ NC='\033[0m'
 local_ip=$(hostname -I | awk '{print $1}')
 echo -e "${GREEN}============================================================================${NC}"
 echo -e "${GREEN}============================================================================${NC}"
-echo -e "${GREEN}=========== MMMMM  EEEEE  DDDDD   OOOO  TTTTT ==============${NC}"   
-echo -e "${GREEN}========== MM MM  EE     DD  DD OO  OO   TT   ==============${NC}" 
-echo -e "${GREEN}========= MM  MM  EEEE   DD  DD OO  OO   TT   ==============${NC}"
-echo -e "${GREEN}========= MM     EE     DD  DD OO  OO   TT    ==============${NC}"
-echo -e "${GREEN}========= MM     EEEEE  DDDDD   OOOO    TT    ==============${NC}"
+echo -e "${GREEN}===  M   M  EEEEE  DDDD   OOOO  TTTTT        083847782001                ===${NC}"
+echo -e "${GREEN}===  MM MM  E      D   D O    O   T          083847782001                ===${NC}"
+echo -e "${GREEN}===  M M M  EEEE   D   D O    O   T          083847782001                ===${NC}"
+echo -e "${GREEN}===  M   M  E      D   D O    O   T          083847782001                ===${NC}"
+echo -e "${GREEN}===  M   M  EEEEE  DDDD   OOOO    T          083847782001                ===${NC}"
 echo -e "${GREEN}============================================================================${NC}"
-echo -e "${GREEN}========================= . Info 083847782001 ==============================${NC}"
+echo -e "${GREEN}============================ Info: 083847782001 ============================${NC}"
 echo -e "${GREEN}============================================================================${NC}"
 echo -e "${GREEN}${NC}"
 echo -e "${GREEN}Autoinstall GenieACS.${NC}"
@@ -177,7 +177,7 @@ echo -e "${GREEN}===============================================================
 echo -e "${GREEN}=================== VIRTUAL PARAMETER BERHASIL DI INSTALL. =================${NC}"
 echo -e "${GREEN}===Jika ACS URL berbeda, silahkan edit di Admin >> Provosions >> inform ====${NC}"
 echo -e "${GREEN}========== GenieACS UI akses port 3000. : http://$local_ip:3000 ============${NC}"
-echo -e "${GREEN}=================== Informasi: Whatsapp 081947215703 =======================${NC}"
+echo -e "${GREEN}=================== Informasi: Whatsapp 083847782001 =======================${NC}"
 echo -e "${GREEN}============================================================================${NC}"
 cd
 sudo rm -r genieacs
