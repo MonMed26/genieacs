@@ -1,0 +1,1013 @@
+Name,"Script"		
+IPTR069,"// TR069 IP		
+let result = ''		
+		
+if (""value"" in args[1]) {		
+    result = args[1].value[0]		
+}		
+		
+if (result === '' || result === '0.0.0.0') {		
+    let keys = [		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.2.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.3.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.4.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANIPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANIPConnection.2.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.3.WANIPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.4.WANIPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.5.WANIPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.5.WANIPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ExternalIPAddress',		
+        'Device.IP.Interface.1.IPv4Address.1.IPAddress'		
+    ]		
+		
+    result = getParameterValue(keys)		
+}		
+		
+return {writable: false, value: [result, ""xsd:string""]}		
+		
+function getParameterValue(keys) {		
+    for (let key of keys) {		
+        if (key.includes('ExternalIPAddress')) {		
+            let connectionTypeKey = key.replace('ExternalIPAddress', 'ConnectionType')		
+            let connectionType = declare(connectionTypeKey, {value: Date.now()})		
+            if (connectionType.size && connectionType.value[0] === 'bridge') {		
+                continue		
+            }		
+        }		
+		
+        let d = declare(key, {path: Date.now() - (120 * 1000), value: Date.now()})		
+		
+        for (let item of d) {		
+            if (item.value && item.value[0] && item.value[0] !== '0.0.0.0') {		
+                return item.value[0]		
+            }		
+        }		
+    }		
+		
+    return ''		
+}		
+"
+RXPower"",""// Parameter pengukuran PON RX pada perangkat berbeda"		
+// https://wa.me/628980999878		
+		
+let m = ""N/A""		
+let db = """"		
+let zte = declare(""InternetGatewayDevice.WANDevice.*.X_ZTE-COM_WANPONInterfaceConfig.RXPower"", {value: Date.now()})		
+let huawei = declare(""InternetGatewayDevice.WANDevice.*.X_GponInterafceConfig.RXPower"", {value: Date.now()})		
+let fiberhome = declare(""InternetGatewayDevice.WANDevice.*.X_FH_GponInterfaceConfig.RXPower"", {value: Date.now()})		
+let ztecmcc = declare(""InternetGatewayDevice.WANDevice.*.X_CMCC_EponInterfaceConfig.RXPower"" , {value: Date.now()})		
+let ztecmcg = declare(""InternetGatewayDevice.WANDevice.*.X_CMCC_GponInterfaceConfig.RXPower"" , {value: Date.now()})		
+let gm220se = declare(""InternetGatewayDevice.WANDevice.*.X_CT-COM_EponInterfaceConfig.RXPower"" , {value: Date.now()})		
+let gm220sg = declare(""InternetGatewayDevice.WANDevice.*.X_CT-COM_GponInterfaceConfig.RXPower"" , {value: Date.now()})		
+"let f477v2 = declare(""""InternetGatewayDevice.WANDevice.*.X_CU_WANEPONInterfaceConfig.OpticalTransceiver.RXPower""""	, {value: Date.now()})"		
+let nokia = declare(""InternetGatewayDevice.X_ALU_OntOpticalParam.RXPower"" , {value: Date.now()})		
+"	"		
+if (zte.size) {		
+   let zteval = zte.value[0]		
+   if (zteval < 0) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 0) {		
+      db = 30 + (Math.log10((zteval * (Math.pow(10,-7))))*10)		
+"	  m = Math.ceil(db * 100) / 100"		
+    }		
+}		
+else if (ztecmcc.size) {		
+   let zteval = ztecmcc.value[0]		
+   if (zteval < 0) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 0) {		
+      db = 30 + (Math.log10((zteval * (Math.pow(10,-7))))*10)		
+"	  m = Math.ceil(db * 100) / 100"		
+    }		
+}		
+else if (ztecmcg.size) {		
+   let zteval = ztecmcg.value[0]		
+   if (zteval < 0) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 0) {		
+      db = 30 + (Math.log10((zteval * (Math.pow(10,-7))))*10)		
+"	  m = Math.ceil(db * 100) / 100"		
+    }		
+}		
+else if (gm220se.size) {		
+   let zteval = gm220se.value[0]		
+   if (zteval < 0) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 0) {		
+      db = 30 + (Math.log10((zteval * (Math.pow(10,-7))))*10)		
+"	  m = Math.ceil(db * 100) / 100"		
+    }		
+}		
+else if (gm220sg.size) {		
+   let zteval = gm220sg.value[0]		
+   if (zteval < 0) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 0) {		
+      db = 30 + (Math.log10((zteval * (Math.pow(10,-7))))*10)		
+"	  m = Math.ceil(db * 100) / 100"		
+    }		
+}		
+else if (f477v2.size) {		
+   let zteval = f477v2.value[0]		
+   if (zteval < 0) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 0) {		
+      db = 30 + (Math.log10((zteval * (Math.pow(10,-7))))*10)		
+"	  m = Math.ceil(db * 100) / 100"		
+    }		
+}		
+else if (huawei.size) {		
+  for (let p of huawei) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+else if (fiberhome.size) {		
+  for (let p of fiberhome) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+else if (nokia.size) {		
+  for (let p of nokia) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+return {writable: false, value: [m, ""xsd:string""]}	"
+WlanPassword"",""// WLAN PW"	
+let m = """"		
+if (args[1].value) {		
+  m = args[1].value[0]		
+  declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PreSharedKey.1.KeyPassphrase"", null, {value: m})		
+  declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase"", null, {value: m})		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PreSharedKey.1.KeyPassphrase"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase"", {value: Date.now()})		
+		
+		
+  if (v1.size) {		
+    m = v1.value[0]		
+  }		
+  else if (v2.size) {		
+    m = v2.value[0]		
+  }		
+}		
+		
+return {writable: true, value: [m, ""xsd:string""]}		
+"
+getdeviceuptime"",""// Device Uptime"		
+let totalSecs = """"		
+const brand = declare('DeviceID.Manufacturer', {value: 1}).value[0]		
+		
+if (args[1].value) {		
+  totalSecs = args[1].value[0]		
+  if (brand !== 'MikroTik') {		
+    declare(""InternetGatewayDevice.DeviceInfo.UpTime"", null, {value: totalSecs})		
+  } else {		
+    declare(""Device.DeviceInfo.UpTime"", null, {value: totalSecs})		
+  }		
+}		
+else {		
+  if (brand !== 'MikroTik') {		
+    totalSecs = declare(""InternetGatewayDevice.DeviceInfo.UpTime"", {value: Date.now()}).value[0]		
+  } else {		
+    totalSecs = declare(""Device.DeviceInfo.UpTime"", {value: Date.now()}).value[0]		
+  }		
+}		
+let days = Math.floor(totalSecs / 86400)		
+let rem  = totalSecs % 86400		
+let hrs  = Math.floor(rem / 3600)		
+if (hrs < 10) {		
+"	hrs = """"0"""" + hrs"		
+}		
+		
+rem  = rem % 3600		
+let mins = Math.floor(rem / 60)		
+if (mins < 10) {		
+"	mins = """"0"""" + mins"		
+}		
+let secs = rem % 60		
+if (secs < 10) {		
+"	secs = """"0"""" + secs"		
+}		
+		
+let up = days + ""d "" + hrs + "":"" + mins + "":"" + secs		
+		
+return {writable: false, value: up}	"
+getponmode"",""// Mendapatkan informasi PON"	
+let pon = """"		
+if (args[1].value) {		
+  pon = args[1].value[0]		
+  declare(""InternetGatewayDevice.DeviceInfo.X_HW_UpPortMode"", {value: Date.now()})		
+  		
+}		
+else {		
+  		
+  let v1 = declare(""InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.WANAccessType"", {value: Date.now()})		
+		
+  if (v1.size) {		
+    pon = v1.value[0]		
+  }		
+}		
+		
+pon = pon.toUpperCase()		
+		
+const brand = declare('DeviceID.Manufacturer', {value: Date.now(86400000)}).value[0]		
+if (brand === 'RAISECOM' || brand === 'Raisecom' ) {		
+  pon = ""GPON""		
+} else if (pon.includes(""EPON"")) {		
+  pon = ""EPON""		
+} else if (pon.includes(""GPON"")) {		
+  pon = ""GPON""		
+} else if (pon.includes(""PON"")) {		
+  pon = ""GPON""		
+} else {		
+  pon = ""Ethernet""		
+}		
+		
+		
+return {writable: false, value: [pon, ""xsd:string""]}	"
+pppoeIP"",""// pppoeIP New"	
+let result = ''		
+		
+if (""value"" in args[1]) {		
+    result = args[1].value[0]		
+}		
+		
+if (result === '') {		
+    let keys = [		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.*.WANConnectionDevice.1.WANPPPConnection.2.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.2.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.3.WANPPPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.4.WANPPPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.5.WANPPPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.5.WANPPPConnection.1.ExternalIPAddress',		
+        'InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ExternalIPAddress',		
+        'Device.IP.Interface.1.IPv4Address.1.IPAddress'		
+    ]		
+		
+    result = getParameterValue(keys)		
+}		
+		
+log(""pppoeIP: "" + result)		
+return {writable: false, value: [result, ""xsd:string""]}		
+		
+function getParameterValue(keys) {		
+    for (let key of keys) {		
+        if (key.includes('WANPPPConnection.1.ExternalIPAddress')) {		
+            let connectionTypeKey = key.replace('ExternalIPAddress', 'ConnectionType')		
+            let connectionType = declare(connectionTypeKey, {value: Date.now()})		
+            if (connectionType.size && connectionType.value[0] === 'bridge') {		
+                continue		
+            }		
+        }		
+		
+        let d = declare(key, {path: Date.now() - (120 * 1000), value: Date.now()})		
+		
+        for (let item of d) {		
+            if (item.value && item.value[0] && item.value[0] !== '0.0.0.0') {		
+                return item.value[0]		
+            }		
+        }		
+    }		
+		
+    return ''		
+}		
+"
+pppoeMac"",""// Mac Address PPPoE Pada devices berbeda"		
+let m = """"		
+let w1 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.MACAddress"", {value: Date.now()})		
+let w2 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.2.MACAddress"", {value: Date.now()})		
+let w3 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.MACAddress"", {value: Date.now()})		
+let w4 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.2.MACAddress"", {value: Date.now()})		
+"				   "		
+		
+if (w1.size) {		
+  for (let p of w1) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+else if (w2.size) {		
+  for (let p of w2) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+else if (w3.size) {		
+  for (let p of w3) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+else if (w4.size) {		
+  for (let p of w4) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+		
+return {writable: false, value: [m, ""xsd:string""]}		
+"
+pppoePassword"",""// PPPoE Password"		
+let pw = """"		
+if (args[1].value) {		
+  pw = args[1].value[0]		
+  declare(""InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Password"", null, {value: pw})		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Password"", {value: Date.now()})		
+		
+  if (v1.size) {		
+    pw = v1.value[0]		
+  }		
+}		
+		
+return {writable: true, value: [pw, ""xsd:string""]}		
+"
+pppoeUsername"",""// PPPoE Username"		
+let user = """"		
+if (args[1].value) {		
+  user = args[1].value[0]		
+  declare(""InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Username"", null, {value: user})		
+} else {		
+  let v1 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.1.Username"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.2.Username"", {value: Date.now()})		
+  let v3 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.3.Username"", {value: Date.now()})		
+  let v4 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.4.Username"", {value: Date.now()})		
+  let v5 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.5.Username"", {value: Date.now()})		
+  let v6 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.Username"", {value: Date.now()})		
+  let v7 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.2.Username"", {value: Date.now()})		
+  let v8 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.3.Username"", {value: Date.now()})		
+  let v9 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.4.Username"", {value: Date.now()})		
+  let v10 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.5.Username"", {value: Date.now()})		
+		
+  if (v1.size && v1.value[0]) {		
+    user = v1.value[0]		
+  } else if (v2.size && v2.value[0]) {		
+    user = v2.value[0]		
+  } else if (v3.size && v3.value[0]) {		
+    user = v3.value[0]		
+  } else if (v4.size && v4.value[0]) {		
+    user = v4.value[0]		
+  } else if (v5.size && v5.value[0]) {		
+    user = v5.value[0]		
+  } else if (v6.size && v6.value[0]) {		
+    user = v6.value[0]		
+  } else if (v7.size && v7.value[0]) {		
+    user = v7.value[0]		
+  } else if (v8.size && v8.value[0]) {		
+    user = v8.value[0]		
+  } else if (v9.size && v9.value[0]) {		
+    user = v9.value[0]		
+  } else if (v10.size && v10.value[0]) {		
+    user = v10.value[0]		
+  }		
+}		
+		
+		
+return {writable: true, value: [user, ""xsd:string""]}		
+"
+gettemp"",""// Parameter pengukuran Temperatur pada perangkat berbeda"		
+// https://wa.me/628980999878		
+		
+let m = ""N/A""		
+let db = """"		
+let zte1 = declare(""InternetGatewayDevice.WANDevice.1.X_CU_WANEPONInterfaceConfig.OpticalTransceiver.Temperature"", {value: Date.now()})		
+let zte2 = declare(""InternetGatewayDevice.WANDevice.1.X_CU_WANGPONInterfaceConfig.OpticalTransceiver.Temperature"", {value: Date.now()})		
+let zte3 = declare(""InternetGatewayDevice.WANDevice.1.X_ZTE-COM_WANPONInterfaceConfig.TransceiverTemperature"", {value: Date.now()})		
+let zte4 = declare(""InternetGatewayDevice.WANDevice.1.X_CMCC_EponInterfaceConfig.TransceiverTemperature"", {value: Date.now()})		
+let zte5 = declare(""InternetGatewayDevice.WANDevice.1.X_CMCC_GponInterfaceConfig.TransceiverTemperature"", {value: Date.now()})		
+let huawei = declare(""InternetGatewayDevice.WANDevice.1.X_GponInterafceConfig.TransceiverTemperature"", {value: Date.now()})		
+let jze = declare(""InternetGatewayDevice.WANDevice.1.X_CT-COM_EponInterfaceConfig.TransceiverTemperature"", {value: Date.now()})		
+let jzg = declare(""InternetGatewayDevice.WANDevice.1.X_CT-COM_GponInterfaceConfig.TransceiverTemperature"", {value: Date.now()})		
+let fh = declare(""InternetGatewayDevice.WANDevice.1.X_FH_GponInterfaceConfig.TransceiverTemperature"", {value: Date.now()})		
+		
+		
+const tr069Values = [11509, 11876, 10866, 10592, 11142, 11968]		
+const temperatures = [45, 46, 42, 41, 43, 46]		
+		
+const regression = linearRegression(tr069Values, temperatures)		
+		
+function convertTr069ToTemperature(tr069Value) {		
+  return regression.slope * tr069Value + regression.intercept		
+}		
+		
+		
+if (zte1.size) {		
+   let zteval = zte1.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (zte2.size) {		
+   let zteval = zte2.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (zte3.size) {		
+   let zteval = zte3.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (zte4.size) {		
+   let zteval = zte4.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (zte5.size) {		
+   let zteval = zte5.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (huawei.size) {		
+   let zteval = huawei.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (jze.size) {		
+   let zteval = jze.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (jzg.size) {		
+   let zteval = jzg.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+else if (fh.size) {		
+   let zteval = fh.value[0]		
+   if (zteval < 150) {		
+      m = zteval		
+      		
+    }		
+    else if (zteval > 150) {		
+      const tr069Value = zteval		
+      const temperature = convertTr069ToTemperature(tr069Value)		
+"	  m = temperature.toFixed(0)"		
+    }		
+}		
+		
+// Fungsi regresi linear		
+function linearRegression(x, y) {		
+  const n = x.length		
+  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0		
+		
+  for (let i = 0	 i < n	 i++) {
+    sumX += x[i]		
+    sumY += y[i]		
+    sumXY += x[i] * y[i]		
+    sumX2 += x[i] * x[i]		
+  }		
+		
+  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)		
+  const intercept = (sumY - slope * sumX) / n		
+		
+  return { slope, intercept }		
+}		
+return {writable: false, value: [m, ""xsd:string""]}	"
+userPassword"",""// virtual parameter user password"	
+let m = """"		
+if (args[1].value) {		
+  m = args[1].value[0]		
+  declare(""InternetGatewayDevice.X_CU_Function.Web.UserPassword"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.UserPassword"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.1.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebPassword"", null, {value: m})		
+  declare(""InternetGatewayDevice.User.2.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.UserPassword"", null, {value: m})		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.X_CU_Function.Web.UserPassword"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.UserPassword"", {value: Date.now()})		
+  let v3 = declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.1.Password"", {value: Date.now()})		
+  let v4 = declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebPassword"", {value: Date.now()})		
+  let v5 = declare(""InternetGatewayDevice.User.2.Password"", {value: Date.now()})		
+  let v6 = declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.UserPassword"", {value: Date.now()})		
+		
+  if (v1.size) {		
+    m = v1.value[0]		
+  }		
+  else if (v2.size) {		
+    m = v2.value[0]		
+  }		
+  else if (v3.size) {		
+    m = v3.value[0]		
+  }		
+  else if (v4.size) {		
+    m = v4.value[0]		
+  }		
+  else if (v5.size) {		
+    m = v5.value[0]		
+  }		
+  else if (v6.size) {		
+    m = v6.value[0]		
+  }		
+}		
+		
+return {writable: true, value: [m, ""xsd:string""]}		
+"
+userAdmin"",""// virtual parameter user admin"		
+let m = """"		
+if (args[1].value) {		
+  m = args[1].value[0]		
+  declare(""InternetGatewayDevice.X_CU_Function.Web.UserName"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.UserName"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.1.UserName"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebUsername"", null, {value: m})		
+  declare(""InternetGatewayDevice.User.2.Username"", null, {value: m})		
+  declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.UserName"", null, {value: m})		
+		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.X_CU_Function.Web.UserName"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.UserName"", {value: Date.now()})		
+  let v3 = declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.1.UserName"", {value: Date.now()})		
+  let v4 = declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebUsername"", {value: Date.now()})		
+  let v5 = declare(""InternetGatewayDevice.User.2.Username"", {value: Date.now()})		
+  let v6 = declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.UserName"", {value: Date.now()})		
+		
+  if (v1.size) {		
+    m = v1.value[0]		
+  }		
+  else if (v2.size) {		
+    m = v2.value[0]		
+  }		
+  else if (v3.size) {		
+    m = v3.value[0]		
+  }		
+  else if (v4.size) {		
+    m = v4.value[0]		
+  }		
+  else if (v5.size) {		
+    m = v5.value[0]		
+  }		
+  else if (v6.size) {		
+    m = v6.value[0]		
+  }		
+}		
+		
+return {writable: true, value: [m, ""xsd:string""]}		
+"
+superAdmin"",""// virtual parameter superadmin username"		
+let m = """"		
+if (args[1].value) {		
+  m = args[1].value[0]		
+  declare(""InternetGatewayDevice.X_CU_Function.Web.AdminName"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.AdminName"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.2.UserName"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_CMCC_TeleComAccount.Username"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebSuperUsername"", null, {value: m})		
+  declare(""InternetGatewayDevice.User.1.Username"", null, {value: m})		
+  declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.AdminName"", null, {value: m})		
+		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.X_CU_Function.Web.AdminName"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.AdminName"", {value: Date.now()})		
+  let v3 = declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.2.UserName"", {value: Date.now()})		
+  let v4 = declare(""InternetGatewayDevice.DeviceInfo.X_CMCC_TeleComAccount.Username"", {value: Date.now()})		
+  let v5 = declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebSuperUsername"", {value: Date.now()})		
+  let v6 = declare(""InternetGatewayDevice.User.1.Username"", {value: Date.now()})		
+  let v7 = declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.AdminName"", {value: Date.now()})		
+		
+  if (v1.size) {		
+    m = v1.value[0]		
+  }		
+  else if (v2.size) {		
+    m = v2.value[0]		
+  }		
+  else if (v3.size) {		
+    m = v3.value[0]		
+  }		
+  else if (v4.size) {		
+    m = v4.value[0]		
+  }		
+  else if (v5.size) {		
+    m = v5.value[0]		
+  }		
+  else if (v6.size) {		
+    m = v6.value[0]		
+  }		
+  else if (v7.size) {		
+    m = v7.value[0]		
+  }		
+}		
+		
+return {writable: true, value: [m, ""xsd:string""]}	"
+superPassword"",""// virtual parameter superadmin password"	
+let m = """"		
+if (args[1].value) {		
+  m = args[1].value[0]		
+  declare(""InternetGatewayDevice.X_CU_Function.Web.AdminPassword"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.AdminPassword"", null, {value: m})		
+  declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.2.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_CMCC_TeleComAccount.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebSuperPassword"", null, {value: m})		
+  declare(""InternetGatewayDevice.User.1.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.X_Authentication.WebAccount.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.DeviceInfo.X_CT-COM_TeleComAccount.Password"", null, {value: m})		
+  declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.AdminPassword"", null, {value: m})		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.X_CU_Function.Web.AdminPassword"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.X_Authentication.WebAccount.Password"", {value: Date.now()})		
+  let v3 = declare(""InternetGatewayDevice.UserInterface.X_HW_WebUserInfo.2.Password"", {value: Date.now()})		
+  let v4 = declare(""InternetGatewayDevice.DeviceInfo.X_CT-COM_TeleComAccount.Password"", {value: Date.now()})		
+  let v5 = declare(""InternetGatewayDevice.DeviceInfo.X_CMCC_TeleComAccount.Password"", {value: Date.now()})		
+  let v6 = declare(""InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebSuperPassword"", {value: Date.now()})		
+  let v7 = declare(""InternetGatewayDevice.User.1.Password"", {value: Date.now()})		
+  let v8 = declare(""InternetGatewayDevice.UserInterface.X_ZTE-COM_WebUserInfo.AdminPassword"", {value: Date.now()})		
+  let v9 = declare(""InternetGatewayDevice.X_ZTE-COM_UserInterface.X_ZTE-COM_WebUserInfo.AdminPassword"", {value: Date.now()})		
+		
+"	"		
+  if (v1.size) {		
+    m = v1.value[0]		
+  }		
+  else if (v2.size) {		
+    m = v2.value[0]		
+  }		
+  else if (v3.size) {		
+    m = v3.value[0]		
+  }		
+  else if (v4.size) {		
+    m = v4.value[0]		
+  }		
+  else if (v5.size) {		
+    m = v5.value[0]		
+  }		
+  else if (v6.size) {		
+    m = v6.value[0]		
+  }		
+  else if (v7.size) {		
+    m = v7.value[0]		
+  }		
+  else if (v8.size) {		
+    m = v8.value[0]		
+  }		
+  else if (v9.size) {		
+    m = v9.value[0]		
+  }		
+}		
+		
+return {writable: true, value: [m, ""xsd:string""]}		
+"
+pppoeUsername2"",""// pppoe User (index page)"		
+let result = ''		
+		
+if (""value"" in args[1]) {		
+    result = args[1].value[0]		
+}		
+		
+if (result === '') {		
+    let keys = [		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Username',		
+        'InternetGatewayDevice.WANDevice.*.WANConnectionDevice.1.WANPPPConnection.2.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.2.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.3.WANPPPConnection.1.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.3.WANPPPConnection.2.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.4.WANPPPConnection.1.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.4.WANPPPConnection.2.Username',		
+        'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.5.WANPPPConnection.1.Username',		
+        'InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Username',		
+    ]		
+		
+    result = getParameterValue(keys)		
+}		
+		
+log(""pppoeIP: "" + result)		
+return {writable: false, value: [result, ""xsd:string""]}		
+		
+function getParameterValue(keys) {		
+    for (let key of keys) {		
+        if (key.includes('WANPPPConnection.1.Username')) {		
+            let connectionTypeKey = key.replace('Username', 'ConnectionType')		
+            let connectionType = declare(connectionTypeKey, {value: Date.now()})		
+            if (connectionType.size && connectionType.value[0] === 'PPPoE_Bridged') {		
+                continue		
+            }		
+        }		
+		
+        let d = declare(key, {path: Date.now() - (120 * 1000), value: Date.now()})		
+		
+        for (let item of d) {		
+            if (item.value && item.value[0] && item.value[0] !== '') {		
+                return item.value[0]		
+            }		
+        }		
+    }		
+		
+    return ''		
+}		
+"
+activedevices"",""// Total active all ssid"		
+// By HR whatsapp 0838-3236-2616		
+		
+let active = 0		
+let isNumber = (value) => {		
+  return typeof value === 'number' && isFinite(value)		
+}		
+		
+const merk = declare('DeviceID.Manufacturer', {value: Date.now(86400000)}).value[0]		
+const tipe = declare('DeviceID.ProductClass', {value: Date.now(86400000)}).value[0]		
+if (merk !== ""FiberHome"" || tipe === ""HG6243C"") {		
+let ssid1 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalAssociations"", {value: Date.now()})		
+let ssid2 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalAssociations"", {value: Date.now()})		
+let ssid3 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalAssociations"", {value: Date.now()})		
+let ssid4 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalAssociations"", {value: Date.now()})		
+let ssid5 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalAssociations"", {value: Date.now()})		
+let ssid6 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalAssociations"", {value: Date.now()})		
+let ssid7 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalAssociations"", {value: Date.now()})		
+let ssid8 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalAssociations"", {value: Date.now()})		
+		
+if (ssid1 && ssid1.size && isNumber(ssid1.value[0])) {		
+  active += ssid1.value[0]		
+}		
+		
+if (ssid2 && ssid2.size && isNumber(ssid2.value[0])) {		
+  active += ssid2.value[0]		
+}		
+		
+if (ssid3 && ssid3.size && isNumber(ssid3.value[0])) {		
+  active += ssid3.value[0]		
+}		
+		
+if (ssid4 && ssid4.size && isNumber(ssid4.value[0])) {		
+  active += ssid4.value[0]		
+}		
+		
+if (ssid5 && ssid5.size && isNumber(ssid5.value[0])) {		
+  active += ssid5.value[0]		
+}		
+		
+if (ssid6 && ssid6.size && isNumber(ssid6.value[0])) {		
+  active += ssid6.value[0]		
+}		
+		
+if (ssid7 && ssid7.size && isNumber(ssid7.value[0])) {		
+  active += ssid7.value[0]		
+}		
+		
+if (ssid8 && ssid8.size && isNumber(ssid8.value[0])) {		
+  active += ssid8.value[0]		
+}		
+} else {		
+  let ssid1 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid2 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid3 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid4 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid5 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid6 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid7 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+  let ssid8 = declare(""InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.WLAN_AssociatedDeviceNumberOfEntries"", {value: Date.now()})		
+		
+		
+  if (ssid1 && ssid1.size && isNumber(ssid1.value[0])) {		
+    active += ssid1.value[0]		
+  }		
+  		
+  if (ssid2 && ssid2.size && isNumber(ssid2.value[0])) {		
+    active += ssid2.value[0]		
+  }		
+  		
+  if (ssid3 && ssid3.size && isNumber(ssid3.value[0])) {		
+    active += ssid3.value[0]		
+  }		
+  		
+  if (ssid4 && ssid4.size && isNumber(ssid4.value[0])) {		
+    active += ssid4.value[0]		
+  }		
+  		
+  if (ssid5 && ssid5.size && isNumber(ssid5.value[0])) {		
+    active += ssid5.value[0]		
+  }		
+  		
+  if (ssid6 && ssid6.size && isNumber(ssid6.value[0])) {		
+    active += ssid6.value[0]		
+  }		
+  		
+  if (ssid7 && ssid7.size && isNumber(ssid7.value[0])) {		
+    active += ssid7.value[0]		
+  }		
+  		
+  if (ssid8 && ssid8.size && isNumber(ssid8.value[0])) {		
+    active += ssid8.value[0]		
+  }		
+}		
+return {writable: false, value: active}		
+"
+getpppuptime"",""// virtual PPPoE Uptime. Info https://wa.me/6281336128448"		
+let totalSecs = """"		
+if (args[1].value) {		
+  totalSecs = args[1].value[0]		
+  declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.*.Uptime"", null, {value: totalSecs})		
+  declare(""InternetGatewayDevice.DeviceInfo.UpTime"", null, {value: totalSecs})		
+		
+}		
+else {		
+  let v1 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection.*.Uptime"", {value: Date.now()})		
+  let v2 = declare(""InternetGatewayDevice.DeviceInfo.UpTime"", {value: Date.now()})		
+//  totalSecs = v1.value[0]		
+  if (v1.size) {		
+    totalSecs = v1.value[0]		
+  }		
+}		
+let days = Math.floor(totalSecs / 86400)		
+let rem  = totalSecs % 86400		
+let hrs  = Math.floor(rem / 3600)		
+if (hrs < 10) {		
+"	hrs = """"0"""" + hrs"		
+}		
+		
+rem  = rem % 3600		
+let mins = Math.floor(rem / 60)		
+if (mins < 10) {		
+"	mins = """"0"""" + mins"		
+}		
+let secs = rem % 60		
+if (secs < 10) {		
+"	secs = """"0"""" + secs"		
+}		
+		
+let up = days + ""d "" + hrs + "":"" + mins + "":"" + secs		
+		
+return {writable: false, value: up}	"
+PonMac"",""// Mac Address PON"	
+let m = """"		
+let mac1 = declare(""InternetGatewayDevice.DeviceInfo.X_CU_SerialNumber"", {value: Date.now()})		
+let mac2 = declare(""InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MACAddress"", {value: Date.now()})		
+let mac3 = declare(""InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.MACAddress"", {value: Date.now()})		
+		
+let manufacturer = declare(""DeviceID.Manufacturer"", {value: Date.now()})		
+if (manufacturer.value[0] == ""ZIONCOM"") {		
+  for (let p of mac3) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+} else if (mac1.size) {		
+  for (let p of mac1) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+} else if (mac2.size) {		
+  for (let p of mac2) {		
+    if (p.value[0]) {		
+      m = p.value[0]		
+      break		
+    }		
+  }		
+}		
+		
+		
+return {writable: false, value: [m, ""xsd:string""]}		
+"
+getSerialNumber"",""// Mendapatkan SN ONT. Info https://wa.me/6281336128448"		
+let serialNumber = """"		
+let sn = """"		
+let hexPart = """"		
+		
+// Hex To Text		
+let hexToText = (hex) => {		
+  let text = """"		
+  for (let i = 0	 i < hex.length	 i += 2) {
+    let hexCode = hex.substr(i, 2)		
+    let charCode = parseInt(hexCode, 16)		
+    text += String.fromCharCode(charCode)		
+  }		
+  return text		
+}		
+// Check Hex Or String		
+let isHexadecimal = (str) => {		
+  return /^[0-9A-Fa-f]+$/.test(str)		
+}		
+let ponmode = """"		
+let pon = declare(""VirtualParameters.getponmode"", {value: Date.now()})		
+  if (pon.size) {		
+    ponmode = pon.value[0]		
+  }		
+if (args[1].value) {		
+  serialNumber = args[1].value[0]		
+  if (!isHexadecimal(serialNumber)) {		
+    sn = serialNumber		
+  } else if (serialNumber.includes(""40ee15"")) {		
+    sn = serialNumber		
+  } else if (ponmode.includes(""EPON"")) {		
+    sn = serialNumber		
+  } else {		
+    hexPart = serialNumber.substr(0, 8)		
+    let textPart = hexToText(hexPart)		
+    sn = textPart + serialNumber.substr(8)		
+  }		
+  declare(""DeviceID.SerialNumber"", null, {value: serialNumber})		
+}		
+else {		
+  let snvalue = declare(""DeviceID.SerialNumber"", {value: Date.now()})		
+  serialNumber = snvalue.value[0]		
+  if (!isHexadecimal(serialNumber)) {		
+    sn = serialNumber		
+  } else if (serialNumber.includes(""40ee15"")) {		
+    sn = serialNumber		
+  } else if (ponmode.includes(""EPON"")) {		
+    sn = serialNumber		
+  } else {		
+    hexPart = serialNumber.substr(0, 8)		
+    let textPart = hexToText(hexPart)		
+    sn = textPart + serialNumber.substr(8)		
+  }		
+}		
+		
+return {writable: false, value: sn}		
+"
+"		
