@@ -32,92 +32,92 @@ done
 
 // ... existing code ...
 
-#MongoDB
-if ! sudo systemctl is-active --quiet mongod; then
-    # Deteksi arsitektur CPU
-    ARCH=$(uname -m)
+# #MongoDB
+# if ! sudo systemctl is-active --quiet mongod; then
+#     # Deteksi arsitektur CPU
+#     ARCH=$(uname -m)
     
-    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "armv7l" ]; then
-        # Untuk Armbian/Raspberry Pi (ARM)
-        echo -e "${GREEN}Menginstall MongoDB untuk arsitektur ARM...${NC}"
+#     if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "armv7l" ]; then
+#         # Untuk Armbian/Raspberry Pi (ARM)
+#         echo -e "${GREEN}Menginstall MongoDB untuk arsitektur ARM...${NC}"
         
-        # Tambahkan kunci MongoDB
-        curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+#         # Tambahkan kunci MongoDB
+#         curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
         
-        # Tambahkan repository MongoDB
-        if [ "$ARCH" = "aarch64" ]; then
-            echo "deb [ arch=arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-        else
-            echo "deb [ arch=armhf ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-        fi
+#         # Tambahkan repository MongoDB
+#         if [ "$ARCH" = "aarch64" ]; then
+#             echo "deb [ arch=arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+#         else
+#             echo "deb [ arch=armhf ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+#         fi
         
-        # Update dan install MongoDB dengan versi spesifik
-        sudo apt-get update
-        sudo apt-get install -y mongodb-org=4.4.8 \
-            mongodb-org-server=4.4.8 \
-            mongodb-org-shell=4.4.8 \
-            mongodb-org-mongos=4.4.8 \
-            mongodb-org-tools=4.4.8
+#         # Update dan install MongoDB dengan versi spesifik
+#         sudo apt-get update
+#         sudo apt-get install -y mongodb-org=4.4.8 \
+#             mongodb-org-server=4.4.8 \
+#             mongodb-org-shell=4.4.8 \
+#             mongodb-org-mongos=4.4.8 \
+#             mongodb-org-tools=4.4.8
 
-        # Mencegah upgrade otomatis
-        echo "mongodb-org hold" | sudo dpkg --set-selections
-        echo "mongodb-org-server hold" | sudo dpkg --set-selections
-        echo "mongodb-org-shell hold" | sudo dpkg --set-selections
-        echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
-        echo "mongodb-org-tools hold" | sudo dpkg --set-selections
-    else
-        # Untuk arsitektur x86_64 (tetap menggunakan script original)
-        curl -s ${url_install}mongod.sh | sudo bash
-    fi
+#         # Mencegah upgrade otomatis
+#         echo "mongodb-org hold" | sudo dpkg --set-selections
+#         echo "mongodb-org-server hold" | sudo dpkg --set-selections
+#         echo "mongodb-org-shell hold" | sudo dpkg --set-selections
+#         echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+#         echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+#     else
+#         # Untuk arsitektur x86_64 (tetap menggunakan script original)
+#         curl -s ${url_install}mongod.sh | sudo bash
+#     fi
     
-    # Aktifkan dan jalankan MongoDB
-    sudo systemctl enable mongod
-    sudo systemctl start mongod
-else
-    echo -e "${GREEN}============================================================================${NC}"
-    echo -e "${GREEN}=================== mongodb sudah terinstall sebelumnya. ===================${NC}"
-fi
+#     # Aktifkan dan jalankan MongoDB
+#     sudo systemctl enable mongod
+#     sudo systemctl start mongod
+# else
+#     echo -e "${GREEN}============================================================================${NC}"
+#     echo -e "${GREEN}=================== mongodb sudah terinstall sebelumnya. ===================${NC}"
+# fi
 
-// ... existing code ...
-sleep 3
-if ! sudo systemctl is-active --quiet mongod; then
-    sudo rm genieacs/install.sh
-    exit 1
-fi
+# // ... existing code ...
+# sleep 3
+# if ! sudo systemctl is-active --quiet mongod; then
+#     sudo rm genieacs/install.sh
+#     exit 1
+# fi
 
-#NodeJS Install
-check_node_version() {
-    if command -v node > /dev/null 2>&1; then
-        NODE_VERSION=$(node -v | cut -d 'v' -f 2)
-        NODE_MAJOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 1)
-        NODE_MINOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 2)
+# #NodeJS Install
+# check_node_version() {
+#     if command -v node > /dev/null 2>&1; then
+#         NODE_VERSION=$(node -v | cut -d 'v' -f 2)
+#         NODE_MAJOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 1)
+#         NODE_MINOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 2)
 
-        if [ "$NODE_MAJOR_VERSION" -lt 12 ] || { [ "$NODE_MAJOR_VERSION" -eq 12 ] && [ "$NODE_MINOR_VERSION" -lt 13 ]; } || [ "$NODE_MAJOR_VERSION" -gt 22 ]; then
-            return 1
-        else
-            return 0
-        fi
-    else
-        return 1
-    fi
-}
+#         if [ "$NODE_MAJOR_VERSION" -lt 12 ] || { [ "$NODE_MAJOR_VERSION" -eq 12 ] && [ "$NODE_MINOR_VERSION" -lt 13 ]; } || [ "$NODE_MAJOR_VERSION" -gt 22 ]; then
+#             return 1
+#         else
+#             return 0
+#         fi
+#     else
+#         return 1
+#     fi
+# }
 
-if ! check_node_version; then
-    curl -s \
-${url_install}\
-nodejs.sh | \
-sudo bash
-else
-    NODE_VERSION=$(node -v | cut -d 'v' -f 2)
-    echo -e "${GREEN}============================================================================${NC}"
-    echo -e "${GREEN}============== NodeJS sudah terinstall versi ${NODE_VERSION}. ==============${NC}"
-    echo -e "${GREEN}========================= Lanjut install GenieACS ==========================${NC}"
+# if ! check_node_version; then
+#     curl -s \
+# ${url_install}\
+# nodejs.sh | \
+# sudo bash
+# else
+#     NODE_VERSION=$(node -v | cut -d 'v' -f 2)
+#     echo -e "${GREEN}============================================================================${NC}"
+#     echo -e "${GREEN}============== NodeJS sudah terinstall versi ${NODE_VERSION}. ==============${NC}"
+#     echo -e "${GREEN}========================= Lanjut install GenieACS ==========================${NC}"
 
-fi
-if ! check_node_version; then
-    sudo rm genieacs/install.sh
-    exit 1
-fi
+# fi
+# if ! check_node_version; then
+#     sudo rm genieacs/install.sh
+#     exit 1
+# fi
 
 #GenieACS
 if !  systemctl is-active --quiet genieacs-{cwmp,fs,ui,nbi}; then
@@ -227,8 +227,8 @@ echo -e "${GREEN}===============================================================
 echo -e "${GREEN}========== GenieACS UI akses port 3000. : http://$local_ip:3000 ============${NC}"
 echo -e "${GREEN}=================== Informasi: Whatsapp 081947215703 =======================${NC}"
 echo -e "${GREEN}============================================================================${NC}"
-cp -r app-LU66VFYW.css /usr/lib/node_modules/genieacs/public/
-cp -r logo-3976e73d.svg /usr/lib/node_modules/genieacs/public/
+# cp -r app-LU66VFYW.css /usr/lib/node_modules/genieacs/public/
+# cp -r logo-3976e73d.svg /usr/lib/node_modules/genieacs/public/
 echo -e "${GREEN}Sekarang install parameter. Apakah anda ingin melanjutkan? (y/n)${NC}"
 read confirmation
 
